@@ -9,5 +9,4 @@ public class PiplineDemoApplication {
     public static void main(String[] args) {
         SpringApplication.run(PiplineDemoApplication.class, args);
     }
-
 }
