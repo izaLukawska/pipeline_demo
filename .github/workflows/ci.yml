@@ -21,6 +21,10 @@ jobs:
           MISSED=$(awk -F'"' '/counter type="INSTRUCTION"/ {sum+=$4} END {print sum}' target/site/jacoco/jacoco.xml)
           COVERED=$(awk -F'"' '/counter type="INSTRUCTION"/ {sum+=$6} END {print sum}' target/site/jacoco/jacoco.xml)
           TOTAL=$((MISSED + COVERED))
+          if [ "$TOTAL" -eq 0 ]; then
+            echo "Brak danych o pokryciu! Sprawdź czy plik jacoco.xml istnieje."
+            exit 1
+          fi
           COVERAGE=$(echo "scale=2; ($COVERED / $TOTAL) * 100" | bc)
           echo "Coverage: $COVERAGE%"
           if (( $(echo "$COVERAGE < 80.0" | bc -l) )); then
