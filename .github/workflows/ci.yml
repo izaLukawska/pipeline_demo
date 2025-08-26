@@ -16,16 +16,17 @@ jobs:
           distribution: 'temurin'
       - name: Build & test
         run: mvn clean verify jacoco:report
-      - name: Check jacoco.xml exists
-        run: |
-          if [ ! -f target/site/jacoco/jacoco.xml ]; then
-            echo "Brak pliku jacoco.xml! Sprawdź konfigurację Jacoco i testy."
-            exit 1
-          fi
       - name: Check line coverage
         run: |
-          MISSED=$(awk -F'"' '/counter type="LINE"/ {for(i=1;i<=NF;i++){if($i~/missed=/){sum+=$(i+1)}}} END {print sum}' target/site/jacoco/jacoco.xml)
-          COVERED=$(awk -F'"' '/counter type="LINE"/ {for(i=1;i<=NF;i++){if($i~/covered=/){sum+=$(i+1)}}} END {print sum}' target/site/jacoco/jacoco.xml)
+          MISSED_COVERED=$(awk -F'"' '/counter type="LINE"/ {
+              for(i=1;i<=NF;i++){
+                if($i~/missed=/)m=$(i+1); 
+                if($i~/covered=/)c=$(i+1)
+              }
+          } 
+          END{print m,c}' target/site/jacoco/jacoco.xml)
+          MISSED=$(echo $MISSED_COVERED | cut -d' ' -f1)
+          COVERED=$(echo $MISSED_COVERED | cut -d' ' -f2)
           TOTAL=$((MISSED + COVERED))
           if [ "$TOTAL" -eq 0 ]; then
             echo "Brak danych o pokryciu linii! Sprawdź czy plik jacoco.xml istnieje."
@@ -41,3 +42,8 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           files: target/site/jacoco/jacoco.xml
+
+##Codecov to zewnętrzny serwis do analizy pokrycia testami.
+#Pozwala wizualizować raporty pokrycia kodu, generować odznaki do README,
+##komentować PR z informacją o pokryciu oraz śledzić zmiany pokrycia w repozytorium.
+#Nie jest wymagany do działania testów — używasz go, jeśli chcesz mieć publiczny, czytelny raport pokrycia w GitHub.
