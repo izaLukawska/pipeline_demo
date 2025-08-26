@@ -16,6 +16,8 @@ jobs:
           distribution: 'temurin'
       - name: Build & test
         run: mvn clean verify
+      - name: List jacoco files
+        run: ls -l target/site/jacoco/
       - name: Check jacoco.xml exists
         run: |
           if [ ! -f target/site/jacoco/jacoco.xml ]; then
