@@ -9,5 +9,4 @@ class PiplineDemoApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }
