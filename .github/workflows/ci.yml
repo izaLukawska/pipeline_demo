@@ -18,8 +18,11 @@ jobs:
         run: mvn clean verify
       - name: Check coverage
         run: |
-          COVERAGE=$(mvn jacoco:report | grep -oP 'Total.*?(\d+\.\d+)%' | grep -oP '\d+\.\d+')
-          echo "Coverage: $COVERAGE"
+          MISSED=$(grep -oP 'counter type="INSTRUCTION" missed="\d+"' target/site/jacoco/jacoco.xml | grep -oP '\d+' | head -1)
+          COVERED=$(grep -oP 'counter type="INSTRUCTION" covered="\d+"' target/site/jacoco/jacoco.xml | grep -oP '\d+' | head -1)
+          TOTAL=$((MISSED + COVERED))
+          COVERAGE=$(echo "scale=2; ($COVERED / $TOTAL) * 100" | bc)
+          echo "Coverage: $COVERAGE%"
           if (( $(echo "$COVERAGE < 80.0" | bc -l) )); then
             echo "Coverage too low!"
             exit 1
