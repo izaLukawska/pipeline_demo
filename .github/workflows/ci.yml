@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Build & test
+        run: mvn clean verify
+      - name: Check coverage
+        run: |
+          COVERAGE=$(mvn jacoco:report | grep -oP 'Total.*?(\d+\.\d+)%' | grep -oP '\d+\.\d+')
+          echo "Coverage: $COVERAGE"
+          if (( $(echo "$COVERAGE < 80.0" | bc -l) )); then
+            echo "Coverage too low!"
+            exit 1
+          fi
