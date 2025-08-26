@@ -24,8 +24,8 @@ jobs:
           fi
       - name: Check line coverage
         run: |
-          MISSED=$(awk -F'"' '/counter type="LINE"/ {for(i=1;i<=NF;i++){if($i~/missed=/){m=$(i+1)}}} END {print m}' target/site/jacoco/jacoco.xml)
-          COVERED=$(awk -F'"' '/counter type="LINE"/ {for(i=1;i<=NF;i++){if($i~/covered=/){c=$(i+1)}}} END {print c}' target/site/jacoco/jacoco.xml)
+          MISSED=$(awk -F'"' '/counter type="LINE"/ {for(i=1;i<=NF;i++){if($i~/missed=/){sum+=$(i+1)}}} END {print sum}' target/site/jacoco/jacoco.xml)
+          COVERED=$(awk -F'"' '/counter type="LINE"/ {for(i=1;i<=NF;i++){if($i~/covered=/){sum+=$(i+1)}}} END {print sum}' target/site/jacoco/jacoco.xml)
           TOTAL=$((MISSED + COVERED))
           if [ "$TOTAL" -eq 0 ]; then
             echo "Brak danych o pokryciu linii! Sprawdź czy plik jacoco.xml istnieje."
