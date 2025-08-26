@@ -18,8 +18,8 @@ jobs:
         run: mvn clean verify
       - name: Check coverage
         run: |
-          MISSED=$(awk -F'"' '/counter type="INSTRUCTION"/ {print $4; exit}' target/site/jacoco/jacoco.xml)
-          COVERED=$(awk -F'"' '/counter type="INSTRUCTION"/ {print $6; exit}' target/site/jacoco/jacoco.xml)
+          MISSED=$(awk -F'"' '/counter type="INSTRUCTION"/ {sum+=$4} END {print sum}' target/site/jacoco/jacoco.xml)
+          COVERED=$(awk -F'"' '/counter type="INSTRUCTION"/ {sum+=$6} END {print sum}' target/site/jacoco/jacoco.xml)
           TOTAL=$((MISSED + COVERED))
           COVERAGE=$(echo "scale=2; ($COVERED / $TOTAL) * 100" | bc)
           echo "Coverage: $COVERAGE%"
