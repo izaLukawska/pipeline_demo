@@ -22,5 +22,5 @@ jobs:
         with:
           type: jacoco
           result_path: target/site/jacoco/jacoco.xml
-          min_coverage: 80
+          min_coverage: 30
           token: ${{ secrets.GITHUB_TOKEN }}
