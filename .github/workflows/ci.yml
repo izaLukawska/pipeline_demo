@@ -22,19 +22,19 @@ jobs:
             echo "Brak pliku jacoco.xml! Sprawdź konfigurację Jacoco i testy."
             exit 1
           fi
-      - name: Check coverage
+      - name: Check line coverage
         run: |
-          MISSED=$(awk -F'"' '/counter type="INSTRUCTION"/ {for(i=1;i<=NF;i++){if($i~/missed=/){m=$(i+1)}}} END {print m}' target/site/jacoco/jacoco.xml)
-          COVERED=$(awk -F'"' '/counter type="INSTRUCTION"/ {for(i=1;i<=NF;i++){if($i~/covered=/){c=$(i+1)}}} END {print c}' target/site/jacoco/jacoco.xml)
+          MISSED=$(awk -F'"' '/counter type="LINE"/ {for(i=1;i<=NF;i++){if($i~/missed=/){m=$(i+1)}}} END {print m}' target/site/jacoco/jacoco.xml)
+          COVERED=$(awk -F'"' '/counter type="LINE"/ {for(i=1;i<=NF;i++){if($i~/covered=/){c=$(i+1)}}} END {print c}' target/site/jacoco/jacoco.xml)
           TOTAL=$((MISSED + COVERED))
           if [ "$TOTAL" -eq 0 ]; then
-            echo "Brak danych o pokryciu! Sprawdź czy plik jacoco.xml istnieje."
+            echo "Brak danych o pokryciu linii! Sprawdź czy plik jacoco.xml istnieje."
             exit 1
           fi
           COVERAGE=$(echo "scale=2; ($COVERED / $TOTAL) * 100" | bc)
-          echo "Coverage: $COVERAGE%"
+          echo "Line coverage: $COVERAGE%"
           if (( $(echo "$COVERAGE < 80.0" | bc -l) )); then
-            echo "Coverage too low!"
+            echo "Line coverage too low!"
             exit 1
           fi
       - name: Upload coverage to Codecov
