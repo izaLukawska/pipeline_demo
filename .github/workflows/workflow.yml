@@ -1,0 +1,26 @@
+name: Coverage Check
+
+on: [ push, pull_request ]
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Build with Maven
+        run: mvn clean verify
+
+      - name: Check coverage
+        uses: devmasx/coverage-check-action@v1.2.0
+        with:
+          type: jacoco
+          result_path: target/site/jacoco/jacoco.xml
+          min_coverage: 80
+          token: ${{ secrets.GITHUB_TOKEN }}
