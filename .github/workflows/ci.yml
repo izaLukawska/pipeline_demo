@@ -18,8 +18,8 @@ jobs:
         run: mvn clean verify
       - name: Check coverage
         run: |
-          MISSED=$(grep -oP 'counter type="INSTRUCTION" missed="\d+"' target/site/jacoco/jacoco.xml | grep -oP '\d+' | head -1)
-          COVERED=$(grep -oP 'counter type="INSTRUCTION" covered="\d+"' target/site/jacoco/jacoco.xml | grep -oP '\d+' | head -1)
+          MISSED=$(awk -F'"' '/counter type="INSTRUCTION"/ {print $4; exit}' target/site/jacoco/jacoco.xml)
+          COVERED=$(awk -F'"' '/counter type="INSTRUCTION"/ {print $6; exit}' target/site/jacoco/jacoco.xml)
           TOTAL=$((MISSED + COVERED))
           COVERAGE=$(echo "scale=2; ($COVERED / $TOTAL) * 100" | bc)
           echo "Coverage: $COVERAGE%"
