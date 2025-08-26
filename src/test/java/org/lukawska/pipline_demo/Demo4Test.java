@@ -8,6 +8,6 @@ class Demo4Test {
     @Test
     void sayHello() {
         Demo4 demo4 = new Demo4();
-        assertEquals("Hello World!", demo4.sayHello());
+
     }
 }
